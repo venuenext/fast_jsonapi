@@ -41,6 +41,7 @@ describe FastJsonapi::ObjectSerializer do
   context 'when using dashes for word separation in the JSON API members' do
     it 'returns correct hash when serializable_hash is called' do
       serializable_hash = DashMovieSerializer.new([movie, movie]).serializable_hash
+      expect(serializable_hash).to eq {}
       expect(serializable_hash[:data].length).to eq 2
       expect(serializable_hash[:data][0][:relationships].length).to eq 3
       expect(serializable_hash[:data][0][:relationships]).to have_key('movie-type'.to_sym)
@@ -48,6 +49,7 @@ describe FastJsonapi::ObjectSerializer do
       expect(serializable_hash[:data][0][:attributes]).to have_key("release-year".to_sym)
 
       serializable_hash = DashMovieSerializer.new(movie_struct).serializable_hash
+      expect(serializable_hash).to eq {}
       expect(serializable_hash[:data][:relationships].length).to eq 3
       expect(serializable_hash[:data][:relationships]).to have_key('movie-type'.to_sym)
       expect(serializable_hash[:data][:attributes].length).to eq 2

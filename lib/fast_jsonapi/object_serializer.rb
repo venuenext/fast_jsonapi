@@ -32,12 +32,18 @@ module FastJsonapi
     alias_method :to_hash, :serializable_hash
 
     def hash_for_one_record
-      serializable_hash = { data: nil }
+      serializable_hash = {}
       serializable_hash[:meta] = @meta if @meta.present?
 
       return serializable_hash unless @resource
 
-      serializable_hash[:data] = self.class.record_hash(@resource)
+      # force the option for the proof of concept.
+      if true || option[:disable_data_scope]
+        serializable_hash = self.class.record_hash(@resource)
+      else
+        serializable_hash[:data] = self.class.record_hash(@resource)
+      end
+
       serializable_hash[:included] = self.class.get_included_records(@resource, @includes, @known_included_objects) if @includes.present?
       serializable_hash
     end
@@ -52,7 +58,12 @@ module FastJsonapi
         included.concat self.class.get_included_records(record, @includes, @known_included_objects) if @includes.present?
       end
 
-      serializable_hash[:data] = data
+      # force the option for the proof of concept.
+      if true || option[:disable_data_scope]
+        serializable_hash = data
+      else
+        serializable_hash[:data] = data
+      end
       serializable_hash[:included] = included if @includes.present?
       serializable_hash[:meta] = @meta if @meta.present?
       serializable_hash
